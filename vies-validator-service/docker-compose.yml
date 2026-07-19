@@ -1,0 +1,21 @@
+services:
+  vies-validator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: appayipyip:latest
+    container_name: vies-validator-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - VIES_ENDPOINT_URL=https://ec.europa.eu/taxation_customs/vies/services/checkVatService
+      - VIES_CONNECTION_TIMEOUT=5000
+      - VIES_READ_TIMEOUT=10000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
